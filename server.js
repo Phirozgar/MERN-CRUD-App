@@ -11,56 +11,32 @@ if(process.env.NODE_ENV != 'production') { // can have values development/testin
 
 // Import dependencies
 const express = require("express");
+const cors = require("cors");
 const connectToDb = require("./config/connectToDb");
-const Note = require("./models/note");
+const notesControllers = require('./controllers/notesControllers');
+
+
 
 // Create an Express app
 const app = express();
 
 //configure express app to accept json data
 app.use(express.json());
+app.use(cors());
 
 //connect to database
 connectToDb();
 
 //Routing
-app.get("/", (req, res) => {
-    res.json({World : "Hello, Do you want to see all notes? Go to /notes"});
-});
+app.get('/notes', notesControllers.fetchAllNotes);
 
-app.get('/notes', async (req, res) => { //Get all notes
-    //Get all notes from database
-    const allNotes = await Note.find();
+app.get('/notes/:id', notesControllers.fetchOneNote);
 
-    //Respond with all notes
-    res.json({notes: allNotes});
-});
+app.post('/notes', notesControllers.createNote);
 
-app.get('/notes/:id', async (req, res) => {
-    // Get id off of the url
-    const noteId = req.params.id;
+app.put("/notes/:id", notesControllers.updateNote); 
 
-    //find the note using that id
-    const note = await Note.findById(noteId);
-
-    //respond with a note
-    res.json({note: note});
-});
-
-app.post('/notes', async (req, res) => { //Create a new note
-    //Get the sent in data off request body
-    const title = req.body.title;
-    const body = req.body.body;
-
-    //Create a new note with that data
-    const note = await Note.create({
-        title: title, 
-        body: body
-    });
-
-    //Respond with new note
-    res.json({note: note});
-});
+app.delete("/notes/:id", notesControllers.deleteNote);
 
 //Start the server
 app.listen(process.env.PORT);
