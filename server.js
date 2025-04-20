@@ -41,11 +41,11 @@ app.post('/signup', usersController.signup);
 app.post('/login', usersController.login);
 app.get('/logout', usersController.logout);
 app.get('/check-auth', requireAuth, usersController.checkAuth); // Protected route
-app.get('/notes', notesControllers.fetchAllNotes);
-app.get('/notes/:id', notesControllers.fetchOneNote);
-app.post('/notes', notesControllers.createNote);
-app.put("/notes/:id", notesControllers.updateNote); 
-app.delete("/notes/:id", notesControllers.deleteNote);
+app.get('/notes', requireAuth, notesControllers.fetchAllNotes);
+app.get('/notes/:id', requireAuth, notesControllers.fetchOneNote);
+app.post('/notes', requireAuth, notesControllers.createNote);
+app.put("/notes/:id", requireAuth, notesControllers.updateNote); 
+app.delete("/notes/:id", requireAuth, notesControllers.deleteNote);
 
 //Start the server
 app.listen(process.env.PORT, () => {
