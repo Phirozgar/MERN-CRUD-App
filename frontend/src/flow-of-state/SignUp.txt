@@ -1,0 +1,26 @@
+======================
+📝 SIGNUP FLOW
+======================
+
+1. The user visits "/signup", which routes to:
+   <Route path="/signup" element={<SignupPage />} />
+
+2. <SignupPage /> renders <SignupForm />
+
+3. Inside <SignupForm />:
+   - Controlled inputs use store.signupForm state.
+   - onChange={store.updateSignupForm} updates the state dynamically:
+     signupForm: { email: "user@example.com", password: "password123" }
+
+4. When the form is submitted:
+   - handleSignup is triggered.
+   - e.preventDefault() stops the form reload.
+   - store.signup() is called.
+
+5. Inside store.signup():
+   - Zustand grabs signupForm values.
+   - Sends a POST request to /signup with credentials.
+   - Clears the signup form state.
+   - Logs the server response.
+
+6. After signup, navigate("/login") redirects the user to the login page.

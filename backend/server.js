@@ -34,7 +34,10 @@ app.use(
 );
 
 //connect to database
-connectToDb();
+connectToDb().catch(err => {
+    console.error('Failed to connect to database:', err);
+    process.exit(1);
+});
  
 //Routing
 app.post('/signup', usersController.signup);
@@ -47,7 +50,14 @@ app.post('/notes', requireAuth, notesControllers.createNote);
 app.put("/notes/:id", requireAuth, notesControllers.updateNote); 
 app.delete("/notes/:id", requireAuth, notesControllers.deleteNote);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something broke!' });
+});
+
 //Start the server
-app.listen(process.env.PORT, () => {
-    console.log(`Server running on http://localhost:${process.env.PORT}`);
-  });
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});

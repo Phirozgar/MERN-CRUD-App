@@ -10,7 +10,7 @@ const fetchAllNotes = async (req, res) => {
     res.json({ notes: allNotes });
   } catch (err) {
     console.error(err); // Log the error for debugging
-    res.sendStatus(400).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
+    res.status(500).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
   }
 };
 
@@ -21,13 +21,17 @@ const fetchOneNote = async (req, res) => {
     const noteId = req.params.id;
 
     //find the note using that id
-    const note = await Note.findOne({ id: noteId, user: req.user._id }); // Find the note for the authenticated user
+    const note = await Note.findOne({ _id: noteId, user: req.user._id }); // Find the note for the authenticated user
+
+    if (!note) {
+      return res.status(404).json({ error: "Note not found" });
+    }
 
     //respond with a note
     res.json({ note });
   } catch (err) {
     console.error(err); // Log the error for debugging
-    res.sendStatus(400).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
+    res.status(500).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
   }
 };
 
@@ -48,7 +52,7 @@ const createNote = async (req, res) => {
     res.json({ note });
   } catch (err) {
     console.error(err); // Log the error for debugging
-    res.sendStatus(400).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
+    res.status(500).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
   }
 };
 
@@ -64,21 +68,19 @@ const updateNote = async (req, res) => {
     //Find and update record
     const note = await Note.findOneAndUpdate(
       { _id: noteId, user: req.user._id },
-      {
-        // Find the note for the authenticated user
-        title,
-        body,
-      }
+      { title, body },
+      { new: true }
     );
 
-    //find the updated record
-    const updated = await Note.findById(noteId);
+    if (!note) {
+      return res.status(404).json({ error: "Note not found" });
+    }
 
     //Respond with updated record
     res.json({ note });
   } catch (err) {
     console.error(err); // Log the error for debugging
-    res.sendStatus(400).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
+    res.status(500).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
   }
 };
 
@@ -89,13 +91,17 @@ const deleteNote = async (req, res) => {
     const noteId = req.params.id;
 
     //Delete record
-    const note = await Note.deleteOne({ id: noteId, user: req.user._id });
+    const note = await Note.findOneAndDelete({ _id: noteId, user: req.user._id });
+
+    if (!note) {
+      return res.status(404).json({ error: "Note not found" });
+    }
 
     //Respond with deleted record
-    res.json({ note: note, success: "Record successfully deleted" });
+    res.json({ note, success: "Record successfully deleted" });
   } catch (err) {
     console.error(err); // Log the error for debugging
-    res.sendStatus(400).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
+    res.status(500).json({ error: "Internal server error" }); // Send a 500 response if an error occurs
   }
 };
 

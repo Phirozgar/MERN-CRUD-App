@@ -1,0 +1,32 @@
+======================
+🌐 LOGIN FLOW
+======================
+
+1. The user visits "/login", which is routed via:
+   <Route path="/login" element={<LoginPage />} />
+
+2. <LoginPage /> renders <LoginForm />
+
+3. Inside <LoginForm />:
+   - The email and password inputs are controlled components.
+   - onChange={store.updateLoginForm} is called on input typing.
+   - This updates the Zustand store:
+     loginForm: { email: "user@example.com", password: "secret" }
+
+4. When the user submits the form:
+   - handleLogin is triggered.
+   - e.preventDefault() prevents form reload.
+   - store.login() is called.
+
+5. Inside store.login():
+   - Zustand grabs the loginForm state.
+   - Sends a POST request to /login using axios.
+   - If success: sets loggedIn: true and logs a success message.
+   - If fail: sets loggedIn: false and logs error.
+
+6. After login, navigate("/") redirects the user to the home page.
+
+7. The home page is protected using <RequireAuth>:
+   - If loggedIn === null → store.checkAuth() sends GET /check-auth
+   - If loggedIn === false → redirect to /login
+   - If loggedIn === true → render <NotesPage />

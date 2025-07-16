@@ -1,0 +1,16 @@
+======================
+🚪 LOGOUT FLOW
+======================
+
+1. The user visits "/logout", routed via:
+   <Route path="/logout" element={<LogoutPage />} />
+
+2. <LogoutPage /> uses useEffect to call store.logout() immediately on load.
+
+3. Inside store.logout():
+   - Sends a GET request to /logout.
+   - Resets loginForm to { email: "", password: "" }
+   - Sets loggedIn: false in the Zustand store.
+
+4. The logout confirmation message is shown:
+   <h1>You are now logged out</h1>

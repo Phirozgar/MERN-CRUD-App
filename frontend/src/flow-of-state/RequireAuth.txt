@@ -1,0 +1,20 @@
+=============================
+🔐 PROTECTED ROUTE CHECK FLOW
+=============================
+
+1. The home page "/" route is protected using:
+   <RequireAuth><NotesPage /></RequireAuth>
+
+2. When RequireAuth mounts:
+   - It checks if store.loggedIn is null.
+   - If so, it calls store.checkAuth() to validate login.
+
+3. store.checkAuth():
+   - Sends GET request to /check-auth
+   - If success: sets loggedIn: true
+   - If fail: sets loggedIn: false
+
+4. After that:
+   - If loggedIn === false → redirect to /login
+   - If loggedIn === true → render NotesPage
+   - If still null (loading) → show "Loading..."
