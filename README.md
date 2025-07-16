@@ -2,6 +2,8 @@
 
 A modern, colorful, and secure notes app inspired by Google’s playful style.
 
+Mainly built to practice MERN CRUD operations on something
+
 ## Features
 - Secure authentication (signup, login, logout)
 - Create, edit, and delete notes
